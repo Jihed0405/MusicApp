@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../models/song_model.dart';
-import '../router.dart';
+
 
 class SongCard extends StatelessWidget {
   const SongCard({
@@ -15,7 +16,7 @@ class SongCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-         router.navigateTo(context,'/song');
+         Get.toNamed('/song', arguments: song);
       },
       child: Container(
         margin: const EdgeInsets.only(right: 10),

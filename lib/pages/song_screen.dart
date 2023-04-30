@@ -1,6 +1,7 @@
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:music_app/router.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 import '../models/song_model.dart';
 import '../widgets/player_buttons.dart';
@@ -10,7 +11,7 @@ class SongScreen extends StatefulWidget {
  
 
   
-  const SongScreen({super.key,
+  const SongScreen( {super.key, 
   });
   
 
@@ -20,7 +21,7 @@ class SongScreen extends StatefulWidget {
 
 class _SongScreenState extends State<SongScreen> {
 
-  Song song =Song.songs[0];
+  Song song =Get.arguments ?? Song.songs[0];
   AudioPlayer audioPlayer = AudioPlayer();
 
   
@@ -60,6 +61,7 @@ class _SongScreenState extends State<SongScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,

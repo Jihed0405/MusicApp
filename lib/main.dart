@@ -1,12 +1,12 @@
-import 'package:fluro/fluro.dart';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_app/pages/home.dart';
+import 'package:music_app/pages/playlist_screen.dart';
 import 'package:music_app/pages/song_screen.dart';
-import 'package:music_app/router.dart';
-import 'package:music_app/router.dart';
 import 'package:flutter/services.dart';
 void main() {
-    setupRouter(router);
+    
   runApp(
   
      const MyApp());
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Music App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -29,6 +29,12 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const Home(),
+      getPages: [
+        GetPage(name: '/', page: ()=> const Home()),
+        GetPage(name: '/song', page: ()=> const SongScreen()),
+        GetPage(name: '/playlist', page: ()=> const PlaylistScreen()),
+        
+      ],
     );
   }
 }

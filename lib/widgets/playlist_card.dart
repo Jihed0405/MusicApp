@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../models/playlist_model.dart';
-import '../router.dart';
+
 
 class PlaylistCard extends StatelessWidget {
   const PlaylistCard({
@@ -15,7 +16,7 @@ class PlaylistCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-         router.navigateTo(context,'/playlist');
+          Get.toNamed('/playlist', arguments: playlist);
       },
       child: Container(
         height: 75,
