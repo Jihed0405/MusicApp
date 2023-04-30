@@ -5,8 +5,12 @@ import 'package:music_app/main.dart';
 import 'package:music_app/pages/playlist_screen.dart';
 import 'package:music_app/pages/song_screen.dart';
 import 'package:music_app/pages/home.dart';
+
+import 'models/song_model.dart';
+
 final router = FluroRouter();
 var songHandler = Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+  //final args = context?.settings?.arguments as ScreenArguments;
   return SongScreen();
 });
   var homeHandler = Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {

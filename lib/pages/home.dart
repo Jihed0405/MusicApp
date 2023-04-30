@@ -3,6 +3,7 @@ import 'package:music_app/models/playlist_model.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/router.dart';
 
+import '../widgets/playlist_card.dart';
 import '../widgets/section_headers.dart';
 import '../widgets/song_card.dart';
 
@@ -43,35 +44,11 @@ class _HomeState extends State<Home> {
                   const SectionHeader(title: "Playlists"),
                   ListView.builder(
                     shrinkWrap: true,
+                    padding: const EdgeInsets.only(top:20),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: playlists.length,
                     itemBuilder: ((context,index){
-                      return Container(
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(15.0),
-                              child: Image.network(playlists[index].imageUrl,
-                              height: 50,width: 50,
-                              fit: BoxFit.cover,),
-                            ),
-                            Column(
-                               children: [
-                                 Text(
-                          playlists[index].title,
-                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                         Text(
-                          '${playlists[index].songs.length} songs',
-                          maxLines: 2,
-                          style: Theme.of(context).textTheme.bodySmall,                     ),
-                               ], 
-                            )
-
-                          ],
-                        ),
-                      );
+                      return PlaylistCard(playlist: playlists[index]);
                     }),
                   ),
                 ],  
@@ -83,6 +60,7 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
 
 class _TrendingMusic extends StatelessWidget {
   const _TrendingMusic({

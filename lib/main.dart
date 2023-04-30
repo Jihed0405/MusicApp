@@ -1,6 +1,7 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/pages/home.dart';
+import 'package:music_app/pages/song_screen.dart';
 import 'package:music_app/router.dart';
 import 'package:music_app/router.dart';
 import 'package:flutter/services.dart';
