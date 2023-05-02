@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:music_app/data/data_state_notifier.dart';
 
 import '../models/song_model.dart';
 
 
- class SongCard extends StatefulWidget {
+ class SongCard extends ConsumerStatefulWidget {
  const SongCard({
   Key? key ,
     
@@ -14,10 +16,10 @@ import '../models/song_model.dart';
   final Song song;
 
   @override
-  State<SongCard> createState() => SongCardState();
+  ConsumerState<SongCard> createState() => SongCardState();
 }
 
-class SongCardState extends State<SongCard> {
+class SongCardState extends ConsumerState<SongCard> {
 
 
 
@@ -25,8 +27,8 @@ class SongCardState extends State<SongCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.toNamed('/song', arguments: widget.song);
-     
+        //Get.toNamed('/song', arguments: widget.song);
+        ref.read(songSelect.notifier).state=widget.song;
       },
       child: Container(
         margin: const EdgeInsets.only(right: 10),

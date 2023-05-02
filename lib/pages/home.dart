@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/data/data_state_notifier.dart';
 import 'package:music_app/models/playlist_model.dart';
 import 'package:music_app/models/song_model.dart';
 
@@ -6,16 +7,16 @@ import 'package:music_app/models/song_model.dart';
 import '../widgets/playlist_card.dart';
 import '../widgets/section_headers.dart';
 import '../widgets/song_card.dart';
-
-class Home extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+class Home extends ConsumerStatefulWidget {
 
    Home({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  ConsumerState<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends ConsumerState<Home> {
 final keySongSeletected=GlobalKey<SongCardState>();
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,7 @@ final keySongSeletected=GlobalKey<SongCardState>();
           Positioned(bottom: 10,
           left: 4,
           right: 4,
-          child: PlayerHome(currentSong:songs[0]),)
+          child: PlayerHome(currentSong:ref.watch(songSelect)),)
           ]
         ),
           

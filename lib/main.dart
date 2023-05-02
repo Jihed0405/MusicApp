@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:music_app/pages/home.dart';
 import 'package:music_app/pages/playlist_screen.dart';
@@ -8,8 +9,8 @@ import 'package:flutter/services.dart';
 void main() {
 
   runApp(
-  
-     const MyApp());
+  const ProviderScope(child:  MyApp()));
+     
 }
 
 class MyApp extends StatelessWidget {
