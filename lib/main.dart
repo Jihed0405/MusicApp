@@ -2,17 +2,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:music_app/pages/home.dart';
 import 'package:music_app/pages/playlist_screen.dart';
 import 'package:music_app/pages/song_screen.dart';
 import 'package:flutter/services.dart';
-void main() {
 
-  runApp(
+Future<void> main() async {
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.example.music_app.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
+ runApp(
+   
   const ProviderScope(child:  MyApp()));
-     
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

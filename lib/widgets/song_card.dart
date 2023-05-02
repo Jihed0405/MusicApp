@@ -27,7 +27,7 @@ class SongCardState extends ConsumerState<SongCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        //Get.toNamed('/song', arguments: widget.song);
+        Get.toNamed('/song', arguments: widget.song);
         ref.read(songSelect.notifier).state=widget.song;
       },
       child: Container(
@@ -35,16 +35,16 @@ class SongCardState extends ConsumerState<SongCard> {
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.46,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  image: DecorationImage(
-                    image: AssetImage(
-                      widget.song.coverUrl,
-                    ),
-                    fit: BoxFit.fill,
-                  )),
+              child: ClipRRect(
+              borderRadius: BorderRadius.circular(15.0),
+              child: Image.network(widget.song.coverUrl,
+             height: MediaQuery.of(context).size.height * 0.3,
+            width: MediaQuery.of(context).size.height * 0.65,
+              fit: BoxFit.fill,),
+            ),
+             
             ),
             Container(
               height: 50,

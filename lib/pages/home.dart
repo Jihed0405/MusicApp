@@ -29,8 +29,8 @@ final keySongSeletected=GlobalKey<SongCardState>();
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-            Colors.lightBlue.shade800.withOpacity(0.8),
-            Colors.lightBlue.shade200.withOpacity(0.8),
+            Color.fromARGB(255, 154, 204, 233).withOpacity(0.8),
+            Color.fromARGB(255, 211, 215, 218).withOpacity(0.8),
           ])),
       child: Scaffold(
         
@@ -89,7 +89,7 @@ class _PlayerHomeState extends State<PlayerHome> {
                     height: 40,width: 50,
                     child: ClipRRect(
                        borderRadius: BorderRadius.circular(8),
-                      child: Image(image: AssetImage(widget.currentSong.coverUrl)))),
+                      child: Image.network(widget.currentSong.coverUrl))),
             const SizedBox(width: 10,),
             Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

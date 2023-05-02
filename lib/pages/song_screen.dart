@@ -1,7 +1,12 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
 import '../models/song_model.dart';
 import '../widgets/player_buttons.dart';
@@ -23,17 +28,26 @@ class _SongScreenState extends State<SongScreen> {
 
   Song song =Get.arguments ?? Song.songs[0];
   AudioPlayer audioPlayer = AudioPlayer();
+  
+
 
   
-  
   @override
-  void initState() {
+   void initState()  {
     super.initState();
     audioPlayer.setAudioSource(
       ConcatenatingAudioSource(
         children: [
           AudioSource.uri(
             Uri.parse('asset:///${song.url}'),
+            tag: MediaItem(
+              title: song.title,
+              artist: song.singer,
+              artUri: Uri.parse(song.coverUrl),
+              id:'1',
+            )
+            
+            
           ),
           
         ],
@@ -62,25 +76,48 @@ class _SongScreenState extends State<SongScreen> {
   @override
   Widget build(BuildContext context) {
     
-    return Scaffold(
-      appBar: AppBar(
+    return Container(decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+            Color.fromARGB(255, 28, 70, 117).withOpacity(0.8),
+            Color.fromARGB(255, 104, 115, 121).withOpacity(0.8),
+          ])),
+      child: Scaffold(
         backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            song.coverUrl,
-            fit: BoxFit.fill,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+       
+        body: Scaffold(
+          backgroundColor: Colors.transparent,
+          body:
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15.0),
+                  child: Image.network(
+                    song.coverUrl,
+                    height: MediaQuery.of(context).size.height * 0.45,
+                    width: MediaQuery.of(context).size.width * 1,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.1 ,),
+            _MusicPlayer(
+                song: song,
+                audioPlayer: audioPlayer, 
+                seekBarDataStream: _seekBarDataStream)
+            ],
           ),
-          const _BackgroundFilter(),
-          _MusicPlayer(
-              song: song,
-              audioPlayer: audioPlayer, 
-              seekBarDataStream: _seekBarDataStream)
-        ],
+          
+          
+        ),
       ),
     );
   }

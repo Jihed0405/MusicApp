@@ -19,8 +19,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-            Colors.lightBlue.shade800.withOpacity(0.8),
-            Colors.lightBlue.shade200.withOpacity(0.8),
+            Color.fromARGB(255, 173, 165, 241).withOpacity(0.8),
+            Color.fromARGB(255, 137, 183, 204).withOpacity(0.8),
           ])),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -195,7 +195,7 @@ class _PlaylistInformation extends StatelessWidget {
           child: Image.network(
             playlist.imageUrl,
             height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.height * 0.4,
+            width: MediaQuery.of(context).size.width,
             fit: BoxFit.cover,
           ),
         ),
