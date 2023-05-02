@@ -4,19 +4,29 @@ import 'package:get/get.dart';
 import '../models/song_model.dart';
 
 
-class SongCard extends StatelessWidget {
-  const SongCard({
-    super.key,
-    required this.song,
-  });
-
+ class SongCard extends StatefulWidget {
+ const SongCard({
+  Key? key ,
+    
+    required this.song, 
+  }):super(key: key);
+ 
   final Song song;
+
+  @override
+  State<SongCard> createState() => SongCardState();
+}
+
+class SongCardState extends State<SongCard> {
+
+
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-         Get.toNamed('/song', arguments: song);
+        Get.toNamed('/song', arguments: widget.song);
+     
       },
       child: Container(
         margin: const EdgeInsets.only(right: 10),
@@ -29,7 +39,7 @@ class SongCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15.0),
                   image: DecorationImage(
                     image: AssetImage(
-                      song.coverUrl,
+                      widget.song.coverUrl,
                     ),
                     fit: BoxFit.fill,
                   )),
@@ -50,14 +60,14 @@ class SongCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          song.title,
+                          widget.song.title,
                           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                 color: Colors.lightBlue.shade800,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
                         Text(
-                          song.description,
+                          widget.song.description,
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(
                                 color: Colors.black,
                                 fontWeight: FontWeight.normal,

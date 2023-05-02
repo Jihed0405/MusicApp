@@ -6,7 +6,7 @@ import 'package:music_app/pages/playlist_screen.dart';
 import 'package:music_app/pages/song_screen.dart';
 import 'package:flutter/services.dart';
 void main() {
-    
+
   runApp(
   
      const MyApp());
@@ -28,9 +28,9 @@ class MyApp extends StatelessWidget {
           displayColor: Colors.white,
         ),
       ),
-      home: const Home(),
+      home:  Home(),
       getPages: [
-        GetPage(name: '/', page: ()=> const Home()),
+        GetPage(name: '/', page: ()=>  Home()),
         GetPage(name: '/song', page: ()=> const SongScreen()),
         GetPage(name: '/playlist', page: ()=> const PlaylistScreen()),
         
