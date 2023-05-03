@@ -5,7 +5,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:music_app/data/data_state_notifier.dart';
 import 'package:music_app/pages/song_screen.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import '../models/song_model.dart';
 
 
@@ -63,7 +63,7 @@ class SongCardState extends ConsumerState<SongCard> {
               width: MediaQuery.of(context).size.width * 0.46,
               child: ClipRRect(
               borderRadius: BorderRadius.circular(15.0),
-              child: Image.network(widget.song.coverUrl,
+              child: CachedNetworkImage(imageUrl: widget.song.coverUrl,
              height: MediaQuery.of(context).size.height * 0.3,
             width: MediaQuery.of(context).size.height * 0.65,
               fit: BoxFit.fill,),

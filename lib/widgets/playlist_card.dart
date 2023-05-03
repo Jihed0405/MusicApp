@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../models/playlist_model.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PlaylistCard extends StatelessWidget {
   const PlaylistCard({
@@ -29,7 +29,7 @@ class PlaylistCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(15.0),
-              child: Image.network(playlist.imageUrl,
+              child:CachedNetworkImage(imageUrl: playlist.imageUrl,
               height: 50,width: 50,
               fit: BoxFit.cover,),
             ),

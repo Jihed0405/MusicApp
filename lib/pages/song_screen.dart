@@ -1,6 +1,6 @@
 
 import 'dart:io';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -83,7 +83,7 @@ class SongScreenState extends State<SongScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
-                  child: Image.network(
+                  child: CachedNetworkImage(imageUrl:
                     song.coverUrl,
                     height: MediaQuery.of(context).size.height * 0.45,
                     width: MediaQuery.of(context).size.width * 1,

@@ -5,7 +5,7 @@ import 'package:music_app/models/playlist_model.dart';
 import 'package:music_app/models/song_model.dart';
 import 'package:music_app/pages/song_screen.dart';
 import 'package:just_audio/just_audio.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import '../widgets/playlist_card.dart';
 import '../widgets/section_headers.dart';
 import '../widgets/song_card.dart';
@@ -96,7 +96,7 @@ class _PlayerHomeState extends State<PlayerHome> {
                     height: 40,width: 50,
                     child: ClipRRect(
                        borderRadius: BorderRadius.circular(8),
-                      child: Image.network(widget.currentSong.coverUrl))),
+                      child: CachedNetworkImage(imageUrl: widget.currentSong.coverUrl))),
             const SizedBox(width: 10,),
             Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -353,7 +353,7 @@ class _CustomAppbar extends StatelessWidget with PreferredSizeWidget {
           Container(
             margin: const EdgeInsets.only(right: 20),
             child: const CircleAvatar(
-              backgroundImage: NetworkImage(
+              backgroundImage: CachedNetworkImageProvider(
                   'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80'),
             ),
           )

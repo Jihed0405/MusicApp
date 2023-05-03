@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import '../models/playlist_model.dart';
 
 class PlaylistScreen extends StatefulWidget {
@@ -192,7 +192,7 @@ class _PlaylistInformation extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
-          child: Image.network(
+          child: CachedNetworkImage( imageUrl:
             playlist.imageUrl,
             height: MediaQuery.of(context).size.height * 0.3,
             width: MediaQuery.of(context).size.width,
