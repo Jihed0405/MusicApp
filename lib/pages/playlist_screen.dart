@@ -13,37 +13,60 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
   @override
   Widget build(BuildContext context) {
     Playlist playlist = Playlist.playlists[0];
-    return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-            const Color.fromARGB(255, 173, 165, 241).withOpacity(0.8),
-            const Color.fromARGB(255, 137, 183, 204).withOpacity(0.8),
-          ])),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: const Text('Playlist'),
-        ),
-        body: SingleChildScrollView(
-            child: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Column(
-            children: [
-              _PlaylistInformation(playlist: playlist),
-              const SizedBox(
-                height: 30,
+    return SafeArea(
+      top: true,
+      left: true,
+      bottom: true,
+      child: Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+              const Color.fromARGB(255, 173, 165, 241).withOpacity(0.8),
+              const Color.fromARGB(255, 137, 183, 204).withOpacity(0.8),
+            ])),
+        child: Padding(
+          padding: const EdgeInsets.only(top:8),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: PreferredSize(
+               preferredSize: const Size.fromHeight(60),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 28.0),
+                child: AppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  title: Container(margin: const EdgeInsets.only(left: 100),
+                    child: const Text('Playlist')),
+                ),
               ),
-              const _PlayOrShuffleSwitch(),
-              _PlaylistSongs(playlist: playlist),
-
-            ],
+            ),
+            body: RawScrollbar(
+              thumbColor:Color.fromARGB(115, 66, 4, 238),
+              thickness:5,
+              minOverscrollLength:2,
+              child: SingleChildScrollView(
+                  child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  children: [
+                    _PlaylistInformation(playlist: playlist),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const _PlayOrShuffleSwitch(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    _PlaylistSongs(playlist: playlist),
+              
+                  ],
+                ),
+              )),
+            ),
           ),
-        )),
+        ),
       ),
     );
   }
@@ -64,24 +87,29 @@ class _PlaylistSongs extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: playlist.songs.length,
       itemBuilder: (context,index){
-          return ListTile(
-            leading: Text(
-              '${index + 1}',
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                fontWeight: FontWeight.bold
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                leading:ClipRRect(
+                  borderRadius: BorderRadius.circular(15.0),
+                  child:CachedNetworkImage(imageUrl: playlist.songs[index].coverUrl,
+                  height: 50,width: 50,
+                  fit: BoxFit.cover,),
+                ),
+                title: Text(
+                  playlist.songs[index].title,
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+                subtitle: Text(playlist.songs[index].singer),
+                trailing: const Icon(
+                  Icons.more_vert,
+                  color: Colors.white,
+                ),
               ),
-            ),
-            title: Text(
-              playlist.songs[index].title,
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                fontWeight: FontWeight.bold
-              ),
-            ),
-            subtitle: Text(playlist.songs[index].singer),
-            trailing: const Icon(
-              Icons.more_vert,
-              color: Colors.white,
-            ),
+            ],
           );
       },);
   }
@@ -199,7 +227,7 @@ class _PlaylistInformation extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        const SizedBox(height: 30),
+        const SizedBox(height: 20),
         Text(
           playlist.title,
           style: Theme.of(context)
