@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:music_app/data/data_state_notifier.dart';
+import 'package:music_app/pages/song_screen.dart';
 
 import '../models/song_model.dart';
 
@@ -29,6 +32,27 @@ class SongCardState extends ConsumerState<SongCard> {
       onTap: () {
         Get.toNamed('/song', arguments: widget.song);
         ref.read(songSelect.notifier).state=widget.song;
+        SongScreenState.audioPlayer.setAudioSource(
+           preload: false,
+      ConcatenatingAudioSource(
+        children: [
+          AudioSource.uri(
+            
+            Uri.parse('asset:///${ref.watch(songSelect).url}'),
+            tag: MediaItem(
+              title: ref.watch(songSelect).title,
+              artist: ref.watch(songSelect).singer,
+              artUri: Uri.parse(ref.watch(songSelect).coverUrl),
+              id:'1',
+            )
+            
+            
+          ),
+          
+        ],
+      ),
+    );
+    SongScreenState.audioPlayer.play();
       },
       child: Container(
         margin: const EdgeInsets.only(right: 10),
@@ -59,26 +83,57 @@ class SongCardState extends ConsumerState<SongCard> {
                 children: [
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Text(
-                          widget.song.title,
-                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                color: Colors.lightBlue.shade800,
-                                fontWeight: FontWeight.bold,
-                              ),
+                        Padding(
+                          padding: const EdgeInsets.only(left:8.0),
+                          child: Text(
+                            widget.song.title,
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                  color: Colors.lightBlue.shade800,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
                         ),
-                        Text(
-                          widget.song.description,
-                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                color: Colors.black,
-                                fontWeight: FontWeight.normal,
-                              ),
+                        Padding(
+                          padding: const EdgeInsets.only(left:8.0),
+                          child: Text(
+                            widget.song.description,
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                          ),
                         )
                       ]),
-                  Icon(
-                    Icons.play_circle,
-                    color: Colors.lightBlue.shade800,
+                  IconButton(
+                    icon: Icon(
+                      Icons.play_circle,
+                      color: Colors.lightBlue.shade800,
+                    ),
+                    onPressed: (){
+                        ref.read(songSelect.notifier).state=widget.song;
+                         SongScreenState.audioPlayer.setAudioSource(
+                           preload: false,
+      ConcatenatingAudioSource(
+        children: [
+          AudioSource.uri(
+            Uri.parse('asset:///${ref.watch(songSelect).url}'),
+            tag: MediaItem(
+              title: ref.watch(songSelect).title,
+              artist:ref.watch(songSelect).singer,
+              artUri: Uri.parse(ref.watch(songSelect).coverUrl),
+              id:'1',
+            )
+            
+            
+          ),
+          
+        ],
+      ),
+    );
+    SongScreenState.audioPlayer.play();
+                    },
                   )
                 ],
               ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:music_app/data/data_state_notifier.dart';
 import 'package:music_app/models/playlist_model.dart';
 import 'package:music_app/models/song_model.dart';
-
+import 'package:music_app/pages/song_screen.dart';
+import 'package:just_audio/just_audio.dart';
 
 import '../widgets/playlist_card.dart';
 import '../widgets/section_headers.dart';
@@ -50,7 +52,12 @@ final keySongSeletected=GlobalKey<SongCardState>();
           Positioned(bottom: 10,
           left: 4,
           right: 4,
-          child: PlayerHome(currentSong:ref.watch(songSelect)),)
+          child: InkWell(
+            onTap: () {
+                Get.toNamed('/song', arguments: ref.watch(songSelect));
+                
+            },
+            child: PlayerHome(currentSong:ref.watch(songSelect))),)
           ]
         ),
           
@@ -70,7 +77,7 @@ class _PlayerHomeState extends State<PlayerHome> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60,
+      height: 65,
       padding:const EdgeInsets.all(8) ,
       decoration: const BoxDecoration(
         color: Color(0xff4b6f99),
@@ -106,10 +113,64 @@ class _PlayerHomeState extends State<PlayerHome> {
                 ],
               ),
             Row(
-            children: const[
-              Icon(Icons.favorite_border,color: Colors.white,size:25),
-              SizedBox(width: 10),
-              Icon(Icons.pause,color: Colors.white,size: 30,)
+            children: [
+              const Icon(Icons.favorite_border,color: Colors.white,size:25),
+              const SizedBox(width: 10),
+           StreamBuilder<PlayerState>(
+            stream: SongScreenState.audioPlayer.playerStateStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final playerState = snapshot.data;
+                final processingState = playerState!.processingState;
+                if (processingState == ProcessingState.loading ||
+                    processingState == ProcessingState.buffering) {
+                  return Container(
+                    width: 5.0,
+                    height: 5.0,
+                    margin: const EdgeInsets.all(10.0),
+                    child: const CircularProgressIndicator(
+                      strokeWidth: 2 ,
+                    ),
+                  );
+                } else if (!SongScreenState.audioPlayer.playing) {
+                  return IconButton(
+                    onPressed: SongScreenState.audioPlayer.play,
+                    
+                    icon: const Icon(
+                      Icons.play_arrow_sharp,
+                      color: Colors.white,
+                    ),
+                  );
+                } else if (processingState != ProcessingState.completed) {
+                  return IconButton(
+                    onPressed: SongScreenState.audioPlayer.pause,
+                    
+                    icon: const Icon(
+                      Icons.pause_sharp,
+                      color: Colors.white,
+                    ),
+                  );
+                } else {
+                  return IconButton(
+                    onPressed: () => SongScreenState.audioPlayer.seek(Duration.zero,
+                        index: SongScreenState.audioPlayer.effectiveIndices!.first),
+                    iconSize: 20,
+                    icon: const Icon(
+                      Icons.replay_circle_filled_outlined,
+                      color: Colors.white,
+                    ),
+                  );
+                }
+              } else {
+                return Container(
+                  width: 2, height: 2,
+                  child: const CircularProgressIndicator(
+                    strokeWidth: 2,
+                  ),
+                );
+              }
+            }),
+              
             ],
           )
             ],

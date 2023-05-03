@@ -19,8 +19,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-            Color.fromARGB(255, 173, 165, 241).withOpacity(0.8),
-            Color.fromARGB(255, 137, 183, 204).withOpacity(0.8),
+            const Color.fromARGB(255, 173, 165, 241).withOpacity(0.8),
+            const Color.fromARGB(255, 137, 183, 204).withOpacity(0.8),
           ])),
       child: Scaffold(
         backgroundColor: Colors.transparent,

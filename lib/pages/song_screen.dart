@@ -21,13 +21,13 @@ class SongScreen extends StatefulWidget {
   
 
   @override
-  State<SongScreen> createState() => _SongScreenState();
+  State<SongScreen> createState() => SongScreenState();
 }
 
-class _SongScreenState extends State<SongScreen> {
+class SongScreenState extends State<SongScreen> {
 
   Song song =Get.arguments ?? Song.songs[0];
-  AudioPlayer audioPlayer = AudioPlayer();
+ static AudioPlayer audioPlayer = AudioPlayer();
   
 
 
@@ -35,35 +35,18 @@ class _SongScreenState extends State<SongScreen> {
   @override
    void initState()  {
     super.initState();
-    audioPlayer.setAudioSource(
-      ConcatenatingAudioSource(
-        children: [
-          AudioSource.uri(
-            Uri.parse('asset:///${song.url}'),
-            tag: MediaItem(
-              title: song.title,
-              artist: song.singer,
-              artUri: Uri.parse(song.coverUrl),
-              id:'1',
-            )
-            
-            
-          ),
-          
-        ],
-      ),
-    );
+   
   }
 
   @override
   void dispose() {
-    audioPlayer.dispose();
+   // SongScreenState.audioPlayer.dispose();
     super.dispose();
   }
 
   Stream<SeekBarData> get _seekBarDataStream =>
       rxdart.Rx.combineLatest2<Duration, Duration?, SeekBarData>(
-          audioPlayer.positionStream, audioPlayer.durationStream, (
+          SongScreenState.audioPlayer.positionStream, SongScreenState.audioPlayer.durationStream, (
         Duration position,
         Duration? duration,
       ) {
@@ -111,7 +94,7 @@ class _SongScreenState extends State<SongScreen> {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.1 ,),
             _MusicPlayer(
                 song: song,
-                audioPlayer: audioPlayer, 
+                audioPlayer: SongScreenState.audioPlayer, 
                 seekBarDataStream: _seekBarDataStream)
             ],
           ),
@@ -180,40 +163,4 @@ class _MusicPlayer extends StatelessWidget {
 
 
 
-class _BackgroundFilter extends StatelessWidget {
-  const _BackgroundFilter({
-    super.key,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    return ShaderMask(
-      shaderCallback: (rect) {
-        return LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.white,
-              Colors.white.withOpacity(0.5),
-              Colors.white.withOpacity(0.0),
-            ],
-            stops: const [
-              0.0,
-              0.4,
-              0.8
-            ]).createShader(rect);
-      },
-      blendMode: BlendMode.dstOut,
-      child: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-              Colors.lightBlue.shade200,
-              Colors.lightBlue.shade800,
-            ])),
-      ),
-    );
-  }
-}

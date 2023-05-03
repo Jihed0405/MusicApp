@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:music_app/pages/song_screen.dart';
 
 class PlayerButtons extends StatelessWidget {
   const PlayerButtons({
@@ -29,7 +30,7 @@ class PlayerButtons extends StatelessWidget {
           },
         ),
         StreamBuilder<PlayerState>(
-            stream: audioPlayer.playerStateStream,
+            stream: SongScreenState.audioPlayer.playerStateStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final playerState = snapshot.data;
@@ -42,9 +43,9 @@ class PlayerButtons extends StatelessWidget {
                     margin: const EdgeInsets.all(10.0),
                     child: const CircularProgressIndicator(),
                   );
-                } else if (!audioPlayer.playing) {
+                } else if (!SongScreenState.audioPlayer.playing) {
                   return IconButton(
-                    onPressed: audioPlayer.play,
+                    onPressed: SongScreenState.audioPlayer.play,
                     iconSize: 75,
                     icon: const Icon(
                       Icons.play_circle,
@@ -53,7 +54,7 @@ class PlayerButtons extends StatelessWidget {
                   );
                 } else if (processingState != ProcessingState.completed) {
                   return IconButton(
-                    onPressed: audioPlayer.pause,
+                    onPressed: SongScreenState.audioPlayer.pause,
                     iconSize: 75,
                     icon: const Icon(
                       Icons.pause_circle,
