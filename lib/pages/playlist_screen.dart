@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
+import '../data/data_state_notifier.dart';
 import '../models/playlist_model.dart';
-
-class PlaylistScreen extends StatefulWidget {
+import 'home.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+class PlaylistScreen extends ConsumerStatefulWidget {
   const PlaylistScreen({super.key});
 
   @override
-  State<PlaylistScreen> createState() => _PlaylistScreenState();
+  ConsumerState<PlaylistScreen> createState() => _PlaylistScreenState();
 }
 
-class _PlaylistScreenState extends State<PlaylistScreen> {
+class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
   @override
   Widget build(BuildContext context) {
     Playlist playlist = Playlist.playlists[0];
@@ -42,28 +45,39 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                 ),
               ),
             ),
-            body: RawScrollbar(
-              thumbColor:Color.fromARGB(115, 66, 4, 238),
-              thickness:5,
-              minOverscrollLength:2,
-              child: SingleChildScrollView(
-                  child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  children: [
-                    _PlaylistInformation(playlist: playlist),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const _PlayOrShuffleSwitch(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    _PlaylistSongs(playlist: playlist),
-              
-                  ],
-                ),
-              )),
+            body: Stack(
+              children:[ RawScrollbar(
+                thumbColor:Color.fromARGB(115, 66, 4, 238),
+                thickness:5,
+                minOverscrollLength:2,
+                child: SingleChildScrollView(
+                    child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      _PlaylistInformation(playlist: playlist),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const _PlayOrShuffleSwitch(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      _PlaylistSongs(playlist: playlist),
+                
+                    ],
+                  ),
+                )),
+              ),
+               Positioned(bottom: 65,
+          left: 4,
+          right: 4,
+          child: InkWell(
+            onTap: () {
+                Get.toNamed('/song', arguments: ref.watch(songSelect));
+                
+            },
+            child: PlayerHome(currentSong:ref.watch(songSelect))),)]
             ),
           ),
         ),
