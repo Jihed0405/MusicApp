@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
+import 'package:music_app/pages/song_screen.dart';
 import '../data/data_state_notifier.dart';
 import '../models/playlist_model.dart';
 import 'home.dart';
+import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:developer'as develop;
 class PlaylistScreen extends ConsumerStatefulWidget {
   const PlaylistScreen({super.key});
 
@@ -15,7 +20,8 @@ class PlaylistScreen extends ConsumerStatefulWidget {
 class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
   @override
   Widget build(BuildContext context) {
-    Playlist playlist = Playlist.playlists[0];
+    Playlist playlist = ref.watch(playlistSelect)?? Playlist.playlists[0];
+
     return SafeArea(
       top: true,
       left: true,
@@ -59,7 +65,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      const _PlayOrShuffleSwitch(),
+                       _PlayOrShuffleSwitch(playlist: playlist),
                       const SizedBox(
                         height: 20,
                       ),
@@ -86,92 +92,147 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
   }
 }
 
-class _PlaylistSongs extends StatelessWidget {
+class _PlaylistSongs extends ConsumerStatefulWidget {
   const _PlaylistSongs({
     super.key,
     required this.playlist,
   });
+    final Playlist playlist;
+ @override
+  ConsumerState<_PlaylistSongs> createState() => _PlaylistSongState();
+}
 
-  final Playlist playlist;
+class _PlaylistSongState extends ConsumerState<_PlaylistSongs> {
+
 
   @override
   Widget build(BuildContext context) {
+    
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: playlist.songs.length,
+      itemCount: widget.playlist.songs.length,
       itemBuilder: (context,index){
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                leading:ClipRRect(
-                  borderRadius: BorderRadius.circular(15.0),
-                  child:CachedNetworkImage(imageUrl: playlist.songs[index].coverUrl,
-                  height: 50,width: 50,
-                  fit: BoxFit.cover,),
-                ),
-                title: Text(
-                  playlist.songs[index].title,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.bold
+          return InkWell(
+        onTap: () {
+       // Get.toNamed('/song', arguments: widget.song);
+        ref.read(songSelect.notifier).state=widget.playlist.songs[index];
+        SongScreenState.audioPlayer.setAudioSource(
+        //   preload: false,
+      ConcatenatingAudioSource(
+        children: [
+          AudioSource.uri(
+            
+            Uri.parse('asset:///${ref.watch(songSelect).url}'),
+            tag: MediaItem(
+              title: ref.watch(songSelect).title,
+              artist: ref.watch(songSelect).singer,
+              artUri: Uri.parse(ref.watch(songSelect).coverUrl),
+              id:'1',
+            )
+            
+            
+          ),
+          
+        ],
+      ),
+    );
+    SongScreenState.audioPlayer.play();
+      },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  leading:ClipRRect(
+                    borderRadius: BorderRadius.circular(15.0),
+                    child:CachedNetworkImage(imageUrl: widget.playlist.songs[index].coverUrl,
+                    height: 50,width: 50,
+                    fit: BoxFit.cover,),
+                  ),
+                  title: Text(
+                    widget.playlist.songs[index].title,
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  subtitle: Text(widget.playlist.songs[index].singer),
+                  trailing: const Icon(
+                    Icons.more_vert,
+                    color: Colors.white,
                   ),
                 ),
-                subtitle: Text(playlist.songs[index].singer),
-                trailing: const Icon(
-                  Icons.more_vert,
-                  color: Colors.white,
-                ),
-              ),
-            ],
+              ],
+            ),
           );
       },);
   }
 }
 
-class _PlayOrShuffleSwitch extends StatefulWidget {
+class _PlayOrShuffleSwitch extends ConsumerStatefulWidget {
   const _PlayOrShuffleSwitch({
     super.key,
+ required this.playlist,
   });
+    final Playlist playlist;
+  
   @override
-  State<_PlayOrShuffleSwitch> createState() => _PlayOrShuffleSwitchState();
+  ConsumerState<_PlayOrShuffleSwitch> createState() => _PlayOrShuffleSwitchState();
 }
 
-class _PlayOrShuffleSwitchState extends State<_PlayOrShuffleSwitch> {
-  bool isPlay = true;
+class _PlayOrShuffleSwitchState extends ConsumerState<_PlayOrShuffleSwitch> {
+  bool isPlay = false;
+   var audioSourceChildren=ConcatenatingAudioSource(children: []);
+  @override
+  void initState() {
+  
+   
+   
+    super.initState();
+    
+  }
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          isPlay = !isPlay;
-        });
-      },
-      child: Container(
-        height: 50,
-        width: width,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Stack(
-          children: [
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 200),
-              left: isPlay ? 0 : width * 0.45,
-              child: Container(
-                height: 50,
-                width: width * 0.45,
-                decoration: BoxDecoration(
-                  color: Colors.lightBlue.shade400,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                Expanded(
+    return Container(
+      height: 50,
+      width: width,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Stack(
+        children: [
+          
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isPlay=true;
+                    });
+                    ref.read(songSelect.notifier).state=ref.watch(playlistSelect).songs[0];
+        
+        SongScreenState.audioPlayer.setAudioSource(
+      ConcatenatingAudioSource(children: ref.watch(playlistSelect).songs.map((e) => 
+       AudioSource.uri(
+            
+            Uri.parse('asset:///${e.url}'),
+            tag: MediaItem(
+              title: e.title,
+              artist: e.singer,
+              artUri: Uri.parse(e.coverUrl),
+              id:'1',
+            )
+            
+            
+          ),).toList()),
+
+    );
+  
+    SongScreenState.audioPlayer.play();
+
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -179,19 +240,53 @@ class _PlayOrShuffleSwitchState extends State<_PlayOrShuffleSwitch> {
                         child: Text(
                           'Play',
                           style: TextStyle(
-                              color: isPlay ? Colors.white : Colors.lightBlue,
+                              color: isPlay ? Colors.lightBlue : Colors.black,
                               fontSize: 17),
                         ),
                       ),
                       const SizedBox(width: 10),
                       Icon(
                         Icons.play_circle,
-                        color: isPlay ? Colors.white : Colors.lightBlue,
+                        color: isPlay ? Colors.lightBlue : Colors.black,
                       ),
                     ],
                   ),
                 ),
-                Expanded(
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isPlay=false;
+                    });
+                   
+        
+        SongScreenState.audioPlayer.setAudioSource(
+          initialIndex: 0,
+      ConcatenatingAudioSource(children: ref.watch(playlistSelect).songs.map((e){ 
+      var index=-1;
+      return  AudioSource.uri(
+            
+            Uri.parse('asset:///${e.url}'),
+            tag: MediaItem(
+              title: e.title,
+              artist: e.singer,
+              artUri: Uri.parse(e.coverUrl),
+              id:'${index+1}',
+            )
+            
+            
+          );}).toList()),
+
+    );
+      SongScreenState.audioPlayer.shuffle();
+     SongScreenState.audioPlayer.setShuffleModeEnabled(true);
+  
+    SongScreenState.audioPlayer.play();
+   
+     ref.read(songSelect.notifier).state=ref.watch(playlistSelect).songs[SongScreenState.audioPlayer.effectiveIndices![0]];
+                  
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -199,22 +294,22 @@ class _PlayOrShuffleSwitchState extends State<_PlayOrShuffleSwitch> {
                         child: Text(
                           'Shuffle',
                           style: TextStyle(
-                              color: isPlay ? Colors.lightBlue : Colors.white,
+                              color: isPlay ? Colors.black : Colors.lightBlue,
                               fontSize: 17),
                         ),
                       ),
                       const SizedBox(width: 10),
                       Icon(
                         Icons.shuffle,
-                        color: isPlay ? Colors.lightBlue : Colors.white,
+                        color: isPlay ? Colors.black : Colors.lightBlue,
                       ),
                     ],
                   ),
-                )
-              ],
-            ),
-          ],
-        ),
+                ),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

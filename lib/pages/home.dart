@@ -19,7 +19,7 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home> {
-final keySongSeletected=GlobalKey<SongCardState>();
+
   @override
   Widget build(BuildContext context) {
     List<Song> songs = Song.songs;

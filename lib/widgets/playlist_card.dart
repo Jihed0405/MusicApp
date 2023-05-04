@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:music_app/data/data_state_notifier.dart';
 
 import '../models/playlist_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class PlaylistCard extends StatelessWidget {
+class PlaylistCard extends ConsumerStatefulWidget {
   const PlaylistCard({
     super.key,
     required this.playlist,
   });
 
   final Playlist playlist;
+ @override
+  ConsumerState<PlaylistCard> createState() => _PlaylistScreenState();
+}
+
+class _PlaylistScreenState extends ConsumerState<PlaylistCard> {
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-          Get.toNamed('/playlist', arguments: playlist);
+        ref.read(playlistSelect.notifier).state=widget.playlist;
+          Get.toNamed('/playlist', arguments: widget.playlist);
       },
       child: Container(
         height: 75,
@@ -29,7 +37,7 @@ class PlaylistCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(15.0),
-              child:CachedNetworkImage(imageUrl: playlist.imageUrl,
+              child:CachedNetworkImage(imageUrl: widget.playlist.imageUrl,
               height: 50,width: 50,
               fit: BoxFit.cover,),
             ),
@@ -40,13 +48,13 @@ class PlaylistCard extends StatelessWidget {
                  mainAxisAlignment: MainAxisAlignment.center,
                  children: [
                    Text(
-                    playlist.title,
+                    widget.playlist.title,
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
                   ),
                    Text(
-                    '${playlist.songs.length} songs',
+                    '${widget.playlist.songs.length} songs',
                     maxLines: 2,
                     style: Theme.of(context).textTheme.bodySmall,                     ),
                  ], 

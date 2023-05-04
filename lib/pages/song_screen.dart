@@ -3,16 +3,19 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart' as rxdart;
+import '../data/data_state_notifier.dart';
 import '../models/song_model.dart';
 import '../widgets/player_buttons.dart';
 import '../widgets/seekbar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SongScreen extends StatefulWidget {
+class SongScreen extends ConsumerStatefulWidget {
  
 
   
@@ -21,12 +24,12 @@ class SongScreen extends StatefulWidget {
   
 
   @override
-  State<SongScreen> createState() => SongScreenState();
+  ConsumerState<SongScreen> createState() => SongScreenState();
 }
 
-class SongScreenState extends State<SongScreen> {
+class SongScreenState extends ConsumerState<SongScreen> {
 
-  Song song =Get.arguments ?? Song.songs[0];
+
  static AudioPlayer audioPlayer = AudioPlayer();
   
 
@@ -59,6 +62,8 @@ class SongScreenState extends State<SongScreen> {
   @override
   Widget build(BuildContext context) {
     
+  Song song =ref.watch(songSelect)?? Song.songs[0];  
+  
     return Container(decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -93,7 +98,7 @@ class SongScreenState extends State<SongScreen> {
               ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.1 ,),
             _MusicPlayer(
-                song: song,
+                song: ref.watch(songSelect),
                 audioPlayer: SongScreenState.audioPlayer, 
                 seekBarDataStream: _seekBarDataStream)
             ],
@@ -148,12 +153,13 @@ class _MusicPlayer extends StatelessWidget {
               return SeekBar(
                 position: positionData?.position ?? Duration.zero,
                 duration: positionData?.duration ?? Duration.zero,
-                onChangeEnd: audioPlayer.seek,
+                onChangeEnd: SongScreenState.audioPlayer.seek,
               );
             },
             stream: _seekBarDataStream,
           ),
-          PlayerButtons(audioPlayer: audioPlayer),
+          PlayerButtons(
+            audioPlayer: SongScreenState.audioPlayer),
           
         ],
       ),
