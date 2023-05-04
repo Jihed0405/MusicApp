@@ -32,6 +32,7 @@ class SongCardState extends ConsumerState<SongCard> {
       onTap: () {
         Get.toNamed('/song', arguments: widget.song);
         ref.read(songSelect.notifier).state=widget.song;
+        ref.read(isPlaying.notifier).state=true;
         SongScreenState.audioPlayer.setAudioSource(
            preload: false,
       ConcatenatingAudioSource(
@@ -113,6 +114,7 @@ class SongCardState extends ConsumerState<SongCard> {
                     ),
                     onPressed: (){
                         ref.read(songSelect.notifier).state=widget.song;
+                         ref.read(isPlaying.notifier).state=true;
                          SongScreenState.audioPlayer.setAudioSource(
                            preload: false,
       ConcatenatingAudioSource(

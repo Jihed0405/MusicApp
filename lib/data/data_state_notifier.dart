@@ -14,3 +14,4 @@ final songSelect = StateProvider((ref) {
 final playlistSelect = StateProvider((ref) {
   return  Playlist.playlists[0];
 });
+final isPlaying = StateProvider<bool>((ref)=>false);

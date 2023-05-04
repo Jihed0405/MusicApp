@@ -20,10 +20,12 @@ class Home extends ConsumerStatefulWidget {
 
 class _HomeState extends ConsumerState<Home> {
 
+
   @override
   Widget build(BuildContext context) {
     List<Song> songs = Song.songs;
     List<Playlist> playlists = Playlist.playlists;
+
   
     return Container(
       decoration: BoxDecoration(
@@ -49,7 +51,9 @@ class _HomeState extends ConsumerState<Home> {
             ],
           ),
           ),
-          Positioned(bottom: 10,
+         
+        if (ref.watch(isPlaying)) ...[
+            Positioned(bottom: 10,
           left: 4,
           right: 4,
           child: InkWell(
@@ -57,7 +61,9 @@ class _HomeState extends ConsumerState<Home> {
                 Get.toNamed('/song', arguments: ref.watch(songSelect));
                 
             },
-            child: PlayerHome(currentSong:ref.watch(songSelect))),)
+            child: PlayerHome(currentSong:ref.watch(songSelect))),) 
+         ]
+          
           ]
         ),
           

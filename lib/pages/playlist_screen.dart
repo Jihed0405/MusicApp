@@ -75,6 +75,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
                   ),
                 )),
               ),
+             if (ref.watch(isPlaying)) ...[
                Positioned(bottom: 65,
           left: 4,
           right: 4,
@@ -83,7 +84,9 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
                 Get.toNamed('/song', arguments: ref.watch(songSelect));
                 
             },
-            child: PlayerHome(currentSong:ref.watch(songSelect))),)]
+            child: PlayerHome(currentSong:ref.watch(songSelect))),)
+              ]
+            ]
             ),
           ),
         ),
@@ -117,6 +120,7 @@ class _PlaylistSongState extends ConsumerState<_PlaylistSongs> {
         onTap: () {
        // Get.toNamed('/song', arguments: widget.song);
         ref.read(songSelect.notifier).state=widget.playlist.songs[index];
+        ref.read(isPlaying.notifier).state=true;
         SongScreenState.audioPlayer.setAudioSource(
         //   preload: false,
       ConcatenatingAudioSource(
@@ -212,7 +216,7 @@ class _PlayOrShuffleSwitchState extends ConsumerState<_PlayOrShuffleSwitch> {
                       isPlay=true;
                     });
                     ref.read(songSelect.notifier).state=ref.watch(playlistSelect).songs[0];
-        
+                    ref.read(isPlaying.notifier).state = true;
         SongScreenState.audioPlayer.setAudioSource(
       ConcatenatingAudioSource(children: ref.watch(playlistSelect).songs.map((e) => 
        AudioSource.uri(
@@ -229,7 +233,7 @@ class _PlayOrShuffleSwitchState extends ConsumerState<_PlayOrShuffleSwitch> {
           ),).toList()),
 
     );
-  
+   SongScreenState.audioPlayer.setShuffleModeEnabled(false);
     SongScreenState.audioPlayer.play();
 
                   },
