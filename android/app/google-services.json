@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "933028169402",
+    "project_id": "mode-music-c3b66",
+    "storage_bucket": "mode-music-c3b66.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:933028169402:android:ee6bd98e16efb9e54f6483",
+        "android_client_info": {
+          "package_name": "com.example.music_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "933028169402-nsnvk4snc1of1c2klajcbb9v6jra37vn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkBjBlyvaMw-K41Gwb--M5DHPrr-ujatE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "933028169402-nsnvk4snc1of1c2klajcbb9v6jra37vn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

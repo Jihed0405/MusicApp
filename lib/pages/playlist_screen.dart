@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
@@ -20,7 +21,7 @@ class PlaylistScreen extends ConsumerStatefulWidget {
 class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
   @override
   Widget build(BuildContext context) {
-    Playlist playlist = ref.watch(playlistSelect)?? Playlist.playlists[0];
+    var playlist = ref.watch(playlistSelect);
 
     return SafeArea(
       top: true,
@@ -100,7 +101,7 @@ class _PlaylistSongs extends ConsumerStatefulWidget {
     super.key,
     required this.playlist,
   });
-    final Playlist playlist;
+    final  playlist;
  @override
   ConsumerState<_PlaylistSongs> createState() => _PlaylistSongState();
 }
@@ -111,64 +112,82 @@ class _PlaylistSongState extends ConsumerState<_PlaylistSongs> {
   @override
   Widget build(BuildContext context) {
     
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: widget.playlist.songs.length,
-      itemBuilder: (context,index){
-          return InkWell(
-        onTap: () {
-       // Get.toNamed('/song', arguments: widget.song);
-        ref.read(songSelect.notifier).state=widget.playlist.songs[index];
-        ref.read(isPlaying.notifier).state=true;
-        SongScreenState.audioPlayer.setAudioSource(
-        //   preload: false,
-      ConcatenatingAudioSource(
-        children: [
-          AudioSource.uri(
+    return StreamBuilder(
+       stream: FirebaseFirestore.instance.collection('playlist').doc(ref.watch(docSelectedId)).snapshots().asyncMap((snap) async{
+        Map<String,dynamic> finData =
+                            snap.data() as Map<String,dynamic>;
+        List<dynamic>songs= finData['songs'];
+         var songList = <DocumentSnapshot>[];
+      for (var songPath in songs) {
+        songList.add(await FirebaseFirestore.instance.doc(songPath.path).get());
+      }
+      return songList;
+       } 
+       ),
+              builder: (context,snapshot){
+               
+            //  
+        if(!snapshot.hasData) return const Text("Loading...");
+var x =snapshot.data;
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: snapshot.data!.length,
+        itemBuilder: (context,index){
+            return InkWell(
+          onTap: () {
+         // Get.toNamed('/song', arguments: widget.song);
+          ref.read(songSelect.notifier).state=snapshot.data![index].data() as Map<String, dynamic>;
+          ref.read(isPlaying.notifier).state=true;
+          SongScreenState.audioPlayer.setAudioSource(
+          //   preload: false,
+        ConcatenatingAudioSource(
+          children: [
+            AudioSource.uri(
+              
+              Uri.parse('asset:///${ref.watch(songSelect)['url']}'),
+              tag: MediaItem(
+                title: ref.watch(songSelect)['title'],
+                artist: ref.watch(songSelect)['singer'],
+                artUri: Uri.parse(ref.watch(songSelect)['coverUrl']),
+                id:'1',
+              )
+              
+              
+            ),
             
-            Uri.parse('asset:///${ref.watch(songSelect).url}'),
-            tag: MediaItem(
-              title: ref.watch(songSelect).title,
-              artist: ref.watch(songSelect).singer,
-              artUri: Uri.parse(ref.watch(songSelect).coverUrl),
-              id:'1',
-            )
-            
-            
-          ),
-          
-        ],
-      ),
-    );
-    SongScreenState.audioPlayer.play();
-      },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListTile(
-                  leading:ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    child:CachedNetworkImage(imageUrl: widget.playlist.songs[index].coverUrl,
-                    height: 50,width: 50,
-                    fit: BoxFit.cover,),
-                  ),
-                  title: Text(
-                    widget.playlist.songs[index].title,
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      fontWeight: FontWeight.bold
+          ],
+        ),
+      );
+      SongScreenState.audioPlayer.play();
+        },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    leading:ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child:CachedNetworkImage(imageUrl: snapshot.data![index]['coverUrl'],
+                      height: 50,width: 50,
+                      fit: BoxFit.cover,),
+                    ),
+                    title: Text(
+                      snapshot.data![index]['title'],
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    subtitle: Text(snapshot.data![index]['singer']),
+                    trailing: const Icon(
+                      Icons.more_vert,
+                      color: Colors.white,
                     ),
                   ),
-                  subtitle: Text(widget.playlist.songs[index].singer),
-                  trailing: const Icon(
-                    Icons.more_vert,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          );
-      },);
+                ],
+              ),
+            );
+        },);}
+    );
   }
 }
 
@@ -177,7 +196,7 @@ class _PlayOrShuffleSwitch extends ConsumerStatefulWidget {
     super.key,
  required this.playlist,
   });
-    final Playlist playlist;
+    final  playlist;
   
   @override
   ConsumerState<_PlayOrShuffleSwitch> createState() => _PlayOrShuffleSwitchState();
@@ -215,10 +234,17 @@ class _PlayOrShuffleSwitchState extends ConsumerState<_PlayOrShuffleSwitch> {
                     setState(() {
                       isPlay=true;
                     });
-                    ref.read(songSelect.notifier).state=ref.watch(playlistSelect).songs[0];
+                  
+                    FirebaseFirestore.instance.doc(ref.watch(playlistSelect)['songs'][0].path).get().then((value)  {
+                   //   var x=value.data()!;
+                      ref.read(songSelect.notifier).state=value.data()!;
+                    });
+                    
                     ref.read(isPlaying.notifier).state = true;
+                    
+                   var x = ref.watch(songsOfList);
         SongScreenState.audioPlayer.setAudioSource(
-      ConcatenatingAudioSource(children: ref.watch(playlistSelect).songs.map((e) => 
+      ConcatenatingAudioSource(children: ref.watch(playlistSelect)['songs'].map((e) => 
        AudioSource.uri(
             
             Uri.parse('asset:///${e.url}'),
@@ -267,7 +293,7 @@ class _PlayOrShuffleSwitchState extends ConsumerState<_PlayOrShuffleSwitch> {
         
         SongScreenState.audioPlayer.setAudioSource(
           initialIndex: 0,
-      ConcatenatingAudioSource(children: ref.watch(playlistSelect).songs.map((e){ 
+      ConcatenatingAudioSource(children: ref.watch(playlistSelect)['songs'].map((e){ 
       var index=-1;
       return  AudioSource.uri(
             
@@ -288,7 +314,7 @@ class _PlayOrShuffleSwitchState extends ConsumerState<_PlayOrShuffleSwitch> {
   
     SongScreenState.audioPlayer.play();
    
-     ref.read(songSelect.notifier).state=ref.watch(playlistSelect).songs[SongScreenState.audioPlayer.effectiveIndices![0]];
+     ref.read(songSelect.notifier).state=ref.watch(playlistSelect)['songs'][SongScreenState.audioPlayer.effectiveIndices![0]];
                   
                   },
                   child: Row(
@@ -325,7 +351,7 @@ class _PlaylistInformation extends StatelessWidget {
     required this.playlist,
   });
 
-  final Playlist playlist;
+  final  playlist;
 
   @override
   Widget build(BuildContext context) {
@@ -334,7 +360,7 @@ class _PlaylistInformation extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(15.0),
           child: CachedNetworkImage( imageUrl:
-            playlist.imageUrl,
+            playlist['imageUrl'],
             height: MediaQuery.of(context).size.height * 0.3,
             width: MediaQuery.of(context).size.width,
             fit: BoxFit.cover,
@@ -342,7 +368,7 @@ class _PlaylistInformation extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Text(
-          playlist.title,
+          playlist['title'],
           style: Theme.of(context)
               .textTheme
               .headlineSmall!

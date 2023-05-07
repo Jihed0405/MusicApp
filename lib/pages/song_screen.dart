@@ -62,7 +62,7 @@ class SongScreenState extends ConsumerState<SongScreen> {
   @override
   Widget build(BuildContext context) {
     
-  Song song =ref.watch(songSelect)?? Song.songs[0];  
+   var song =ref.watch(songSelect); 
   
     return Container(decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -89,7 +89,7 @@ class SongScreenState extends ConsumerState<SongScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
                   child: CachedNetworkImage(imageUrl:
-                    song.coverUrl,
+                    song['coverUrl'],
                     height: MediaQuery.of(context).size.height * 0.45,
                     width: MediaQuery.of(context).size.width * 1,
                     fit: BoxFit.fill,
@@ -118,7 +118,7 @@ class _MusicPlayer extends StatelessWidget {
     required this.audioPlayer,
     required Stream<SeekBarData> seekBarDataStream,
   }) : _seekBarDataStream = seekBarDataStream;
-  final Song song;
+  final  song;
   final AudioPlayer audioPlayer;
   final Stream<SeekBarData> _seekBarDataStream;
 
@@ -132,14 +132,14 @@ class _MusicPlayer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(song.title,
+          Text(song['title'],
           style: Theme.of(context).textTheme.headlineSmall!.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
           ),
           const SizedBox(height: 10,),
-          Text(song.description,
+          Text(song['description'],
           maxLines: 2,
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
             color: Colors.white,

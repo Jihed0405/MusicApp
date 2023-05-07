@@ -16,7 +16,7 @@ import '../models/song_model.dart';
     required this.song, 
   }):super(key: key);
  
-  final Song song;
+  final  song;
 
   @override
   ConsumerState<SongCard> createState() => SongCardState();
@@ -39,11 +39,11 @@ class SongCardState extends ConsumerState<SongCard> {
         children: [
           AudioSource.uri(
             
-            Uri.parse('asset:///${ref.watch(songSelect).url}'),
+            Uri.parse('asset:///${ref.watch(songSelect)['url']}'),
             tag: MediaItem(
-              title: ref.watch(songSelect).title,
-              artist: ref.watch(songSelect).singer,
-              artUri: Uri.parse(ref.watch(songSelect).coverUrl),
+              title: ref.watch(songSelect)['title'],
+              artist: ref.watch(songSelect)['singer'],
+              artUri: Uri.parse(ref.watch(songSelect)['coverUrl']),
               id:'1',
             )
             
@@ -64,7 +64,7 @@ class SongCardState extends ConsumerState<SongCard> {
               width: MediaQuery.of(context).size.width * 0.46,
               child: ClipRRect(
               borderRadius: BorderRadius.circular(15.0),
-              child: CachedNetworkImage(imageUrl: widget.song.coverUrl,
+              child: CachedNetworkImage(imageUrl: widget.song['coverUrl'],
              height: MediaQuery.of(context).size.height * 0.3,
             width: MediaQuery.of(context).size.height * 0.65,
               fit: BoxFit.fill,),
@@ -89,7 +89,7 @@ class SongCardState extends ConsumerState<SongCard> {
                         Padding(
                           padding: const EdgeInsets.only(left:8.0),
                           child: Text(
-                            widget.song.title,
+                            widget.song['title'],
                             style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                   color: Colors.lightBlue.shade800,
                                   fontWeight: FontWeight.bold,
@@ -99,7 +99,7 @@ class SongCardState extends ConsumerState<SongCard> {
                         Padding(
                           padding: const EdgeInsets.only(left:8.0),
                           child: Text(
-                            widget.song.description,
+                            widget.song['description'],
                             style: Theme.of(context).textTheme.bodySmall!.copyWith(
                                   color: Colors.black,
                                   fontWeight: FontWeight.normal,
@@ -120,11 +120,11 @@ class SongCardState extends ConsumerState<SongCard> {
       ConcatenatingAudioSource(
         children: [
           AudioSource.uri(
-            Uri.parse('asset:///${ref.watch(songSelect).url}'),
+            Uri.parse('asset:///${ref.watch(songSelect)['url']}'),
             tag: MediaItem(
-              title: ref.watch(songSelect).title,
-              artist:ref.watch(songSelect).singer,
-              artUri: Uri.parse(ref.watch(songSelect).coverUrl),
+              title: ref.watch(songSelect)['title'],
+              artist:ref.watch(songSelect)['singer'],
+              artUri: Uri.parse(ref.watch(songSelect)['coverUrl']),
               id:'1',
             )
             

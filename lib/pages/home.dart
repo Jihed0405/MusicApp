@@ -10,6 +10,7 @@ import '../widgets/playlist_card.dart';
 import '../widgets/section_headers.dart';
 import '../widgets/song_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 class Home extends ConsumerStatefulWidget {
 
    Home({super.key});
@@ -74,7 +75,7 @@ class _HomeState extends ConsumerState<Home> {
 class PlayerHome extends StatefulWidget {
   
   const PlayerHome({super.key, required this.currentSong});
-final Song currentSong;
+final  currentSong;
   @override
   State<PlayerHome> createState() => _PlayerHomeState();
 }
@@ -102,16 +103,16 @@ class _PlayerHomeState extends State<PlayerHome> {
                     height: 40,width: 50,
                     child: ClipRRect(
                        borderRadius: BorderRadius.circular(8),
-                      child: CachedNetworkImage(imageUrl: widget.currentSong.coverUrl))),
+                      child: CachedNetworkImage(imageUrl: widget.currentSong['coverUrl']))),
             const SizedBox(width: 10,),
             Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.currentSong.title,
+                    Text(widget.currentSong['title'],
                     style: const TextStyle(color: Colors.white,fontSize: 18,
                     fontWeight: FontWeight.bold ),
                     ),
-                    Text(widget.currentSong.singer,
+                    Text(widget.currentSong['singer'],
                     style: const TextStyle(color: Colors.white54, ),
                     ),
                   ],
@@ -203,14 +204,23 @@ class _PlaylistMusic extends StatelessWidget {
       child: Column(
         children: [
           const SectionHeader(title: "Playlists"),
-          ListView.builder(
-            shrinkWrap: true,
-            padding: const EdgeInsets.only(top:20),
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: playlists.length,
-            itemBuilder: ((context,index){
-              return PlaylistCard(playlist: playlists[index]);
-            }),
+          StreamBuilder(
+            stream: FirebaseFirestore.instance.collection('playlist').snapshots(),
+            builder: (context,snapshot){
+              if(!snapshot.hasData) return const Text("Loading...");
+                  return ListView.builder(
+              shrinkWrap: true,
+              padding: const EdgeInsets.only(top:20),
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: ((context,index){
+              
+                return PlaylistCard(playlist: snapshot.data!.docs[index].data(),
+                id:snapshot.data!.docs[index].id);
+              }),
+            );
+        
+            },
           ),
         ],  
       ),
@@ -246,14 +256,21 @@ class _TrendingMusicState extends State<_TrendingMusic> {
            const SizedBox(height: 20),
           SizedBox(
           height:MediaQuery.of(context).size.height * 0.27,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: widget.songs.length,
-            itemBuilder: (context,index){
-              return SongCard(  song: widget.songs[index],
-             );
-            }
-            ),
+          child: StreamBuilder(
+              stream: FirebaseFirestore.instance.collection('Song').snapshots(),
+              builder: (context,snapshot){
+              if(!snapshot.hasData) return const Text("Loading...");
+              return  ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount:snapshot.data!.docs.length,
+              itemBuilder: (context,index){
+                return SongCard(  song: snapshot.data!.docs[index].data(),
+               );
+              }
+              );
+         
+              }
+             ),
              )
         ],
       ),

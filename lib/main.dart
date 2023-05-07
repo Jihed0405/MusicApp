@@ -7,8 +7,12 @@ import 'package:music_app/pages/home.dart';
 import 'package:music_app/pages/playlist_screen.dart';
 import 'package:music_app/pages/song_screen.dart';
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await JustAudioBackground.init(
     androidNotificationChannelId: 'com.example.music_app.channel.audio',
     androidNotificationChannelName: 'Audio playback',

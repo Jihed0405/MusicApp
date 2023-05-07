@@ -43,6 +43,7 @@ dependencies:
   just_audio_background: ^0.0.1-beta.9
   path_provider: ^2.0.14
   cached_network_image: ^3.2.3
+  cloud_firestore: ^4.6.0
   
 
 dev_dependencies:
