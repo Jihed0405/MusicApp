@@ -13,7 +13,7 @@ class Song {
      required this.coverUrl});
 
      static List<Song> songs =[
-      Song(title: 'Easy on me', description: 'Easy on me',
+      /* Song(title: 'Easy on me', description: 'Easy on me',
       singer: 'Adele',
        url:'assets/music/Adele - Easy On Me.mp3',
         coverUrl: 'https://i3.ytimg.com/vi/X-yIEMduRXk/maxresdefault.jpg'),
@@ -97,6 +97,6 @@ class Song {
         singer: 'Bebe Rexha & Snoop Dogg', 
         url: 'assets/music/Bebe Rexha & Snoop Dogg - Satellite.mp3',
          coverUrl: 'https://i3.ytimg.com/vi/VBHr0faDCoQ/maxresdefault.jpg'),
-                                 
+                        */          
      ];
 }

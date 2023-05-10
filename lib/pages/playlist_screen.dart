@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:music_app/models/song_model.dart';
 import 'package:music_app/pages/song_screen.dart';
 import '../data/data_state_notifier.dart';
 import '../models/playlist_model.dart';
@@ -77,7 +78,7 @@ class _PlaylistScreenState extends ConsumerState<PlaylistScreen> {
                 )),
               ),
              if (ref.watch(isPlaying)) ...[
-               Positioned(bottom: 65,
+               Positioned(bottom: 0,
           left: 4,
           right: 4,
           child: InkWell(
@@ -128,7 +129,29 @@ class _PlaylistSongState extends ConsumerState<_PlaylistSongs> {
                
             //  
         if(!snapshot.hasData) return const Text("Loading...");
-var x =snapshot.data;
+var songs=snapshot.data!;
+
+ var x=<String,dynamic>{}; 
+ var index=0;
+  Map<String,dynamic> songsOfListMap =  Map<String,dynamic>();
+ Song.songs=[];
+for(var i=0 ;i<songs.length;i++){
+var x = songs[i].data() as Map<String,dynamic>;
+
+Song.songs.add(
+  Song(title: x['title'], description: x['description'], singer: x['singer'], url: x['url'], coverUrl: x['coverUrl'])
+);
+  //Map<String, String> stringQueryParameters =
+/* if(x!=Map<String,dynamic>()){  
+songsOfListMap[i]["title"]=x['title'];
+songsOfListMap[i]["description"]=x['description'];
+songsOfListMap[i]["singer"]=x['singer'];
+songsOfListMap[i]["url"]=x['url'];
+songsOfListMap[i]["coverUrl"]=x['coverUrl'];
+} */
+}
+/* ref.read(songsOfList.notifier).state=songsOfListMap;
+develop.log("$songsOfListMap"); */
       return ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -234,7 +257,7 @@ class _PlayOrShuffleSwitchState extends ConsumerState<_PlayOrShuffleSwitch> {
                     setState(() {
                       isPlay=true;
                     });
-                  
+
                     FirebaseFirestore.instance.doc(ref.watch(playlistSelect)['songs'][0].path).get().then((value)  {
                    //   var x=value.data()!;
                       ref.read(songSelect.notifier).state=value.data()!;
@@ -242,9 +265,9 @@ class _PlayOrShuffleSwitchState extends ConsumerState<_PlayOrShuffleSwitch> {
                     
                     ref.read(isPlaying.notifier).state = true;
                     
-                   var x = ref.watch(songsOfList);
+
         SongScreenState.audioPlayer.setAudioSource(
-      ConcatenatingAudioSource(children: ref.watch(playlistSelect)['songs'].map((e) => 
+      ConcatenatingAudioSource(children:Song.songs.map((e) => 
        AudioSource.uri(
             
             Uri.parse('asset:///${e.url}'),
@@ -293,7 +316,7 @@ class _PlayOrShuffleSwitchState extends ConsumerState<_PlayOrShuffleSwitch> {
         
         SongScreenState.audioPlayer.setAudioSource(
           initialIndex: 0,
-      ConcatenatingAudioSource(children: ref.watch(playlistSelect)['songs'].map((e){ 
+      ConcatenatingAudioSource(children: Song.songs.map((e){ 
       var index=-1;
       return  AudioSource.uri(
             

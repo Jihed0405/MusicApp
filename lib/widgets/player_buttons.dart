@@ -32,7 +32,7 @@ class PlayerButtons extends ConsumerStatefulWidget {
                   SongScreenState.audioPlayer.hasPrevious ? SongScreenState.audioPlayer.seekToPrevious() : null;
                  var indexPrevious=SongScreenState.audioPlayer.currentIndex!-1;
                   if(indexPrevious>=0) {
-                    ref.read(songSelect.notifier).state=ref.watch(playlistSelect)['songs'][indexPrevious];
+                    ref.read(songSelect.notifier).state=ref.watch(songsOfList)[indexPrevious];
                   }
                   if(SongScreenState.audioPlayer.shuffleModeEnabled){
                            var currentIndex=SongScreenState.audioPlayer.currentIndex??0;
@@ -40,7 +40,7 @@ class PlayerButtons extends ConsumerStatefulWidget {
                       var prevElement=indexOfNext!-1;
                      if(prevElement>=0){ prevElement= SongScreenState.audioPlayer.effectiveIndices![prevElement];
                       log("nrxt indice is ${prevElement}");
-                    ref.read(songSelect.notifier).state=ref.watch(playlistSelect)['songs'][prevElement];
+                    ref.read(songSelect.notifier).state=ref.watch(songsOfList)[prevElement];
                      }
                   }
                    },
@@ -114,7 +114,7 @@ class PlayerButtons extends ConsumerStatefulWidget {
                       var nextElement=indexOfNext!+1;
                       nextElement= SongScreenState.audioPlayer.effectiveIndices![nextElement];
                       log("nrxt indice is ${nextElement}");
-                    ref.read(songSelect.notifier).state=ref.watch(playlistSelect)['songs'][nextElement];
+                    ref.read(songSelect.notifier).state=ref.watch(songsOfList)[nextElement];
                   //ref.read(songSelect.notifier).state=ref.watch(playlistSelect).songs[SongScreenState.audioPlayer.currentIndex!+1];
                 }
               

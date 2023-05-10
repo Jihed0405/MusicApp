@@ -19,7 +19,7 @@ final playlistSelect = StateProvider((ref) {
 final isPlaying = StateProvider<bool>((ref)=>false);
 final docSelectedId = StateProvider<String>((ref)=>'');
 final songsOfList = StateProvider((ref) {
-  return   List<DocumentSnapshot<Object?>>;
+  return <String, dynamic>{}; 
   //Playlist.playlists[0];
 });
 
